@@ -1,7 +1,7 @@
 # Wordsmith
 
 ## Demo link:
-Access the site at [jelenac.github.io/wordsmith](https://jelenac.github.io/wordsmith/)
+Access the site at [jelenac.github.io/wordsmith](https://jelenac.github.io/)
 
 ## Table of Content:
 
@@ -9,6 +9,7 @@ Access the site at [jelenac.github.io/wordsmith](https://jelenac.github.io/words
 - [Technologies used](#technologies-used)
 - [Setup](#prerequisites)
 - [Setup](#setup)
+- [Test](#test)
 - [Status](#status)
 - [Credits](#credits)
 - [License](#license)
@@ -34,6 +35,9 @@ Wordsmith is a web app that allows the user to reverse the sentences. The user c
 - go to the app folder - `cd wordsmith`
 - run `npm install` to install the project dependencies
 - run `npm run start` to start the project and open it in your browser
+
+## Test
+- run `npm run test` to run the tests
 
 ## Status
 Wordsmith is still work in progress.
