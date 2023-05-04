@@ -53,13 +53,15 @@ function MySentences() {
     <Sentences>
       <SentencesList>
           {sentences.map(sentence => 
-          <SentenceBlock 
-            key={sentence.id}
-            sentenceLabel= { 'Original sentence' }
-            sentence={sentence.sentence}
-            reversedLabel= { 'Reversed sentence' }
-            reversed={sentence.reversed}/>
-          )}
+            <SentenceBlockWrapper>
+              <SentenceBlock 
+                key={sentence.id}
+                sentenceLabel= { 'Original sentence' }
+                sentence={sentence.sentence}
+                reversedLabel= { 'Reversed sentence' }
+                reversed={sentence.reversed}/>
+              </SentenceBlockWrapper>
+            )}
         </SentencesList>
     </Sentences>
   )
@@ -97,6 +99,8 @@ const SentencesList = styled.ul`
     list-style: none;
     padding: 0;
     margin: 1rem;
+`
+const SentenceBlockWrapper = styled.li`
 `
 
 const NoSentencesMessage = styled.div`

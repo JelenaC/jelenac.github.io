@@ -95,7 +95,7 @@ function Login() {
     return (
         <ContentWrapper>
             <h1>Welcome!</h1>
-            <h3>Are you ready to create funtastic stuff together?</h3>
+            <h2>Are you ready to create funtastic stuff together?</h2>
             <p>But first thing first - you need to log in!</p>
             <LoginForm 
                 onSubmit={handleSubmit} 
@@ -122,7 +122,7 @@ const ContentWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     padding: 1rem;
-    & > h1, & > h3, & > p {
+    & > h1, & > h2, & > h3, & > p {
         color: #333a4e; 
     }
     @media (min-width: 48em) {
