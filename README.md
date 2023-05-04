@@ -1,7 +1,7 @@
 # Wordsmith
 
 ## Demo link:
-Access the site at [jelenac.github.io/wordsmith](https://jelenac.github.io/)
+Access the site at [jelenac.github.io](https://jelenac.github.io/)
 
 ## Table of Content:
 
