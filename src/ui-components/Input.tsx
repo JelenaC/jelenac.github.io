@@ -9,6 +9,7 @@ export interface IUiInput{
   name: string
   value?: string
   defaultValue?: string
+  pattern?: string
   onBlur?: CallableFunction
   onChange?: CallableFunction
   placeholder?: string
@@ -19,7 +20,7 @@ export interface IUiInput{
 }
 
 const Input = forwardRef<HTMLInputElement, IUiInput>(
-  ({ type = 'text', label, name, value, defaultValue, errorMessage, required, onBlur, onChange, disabled, placeholder, autocomplete }, ref) => {
+  ({ type = 'text', label, name, value, defaultValue, errorMessage, required, pattern, onBlur, onChange, disabled, placeholder, autocomplete }, ref) => {
     
     function handleOnChange(e: React.FormEvent<HTMLInputElement>) {
       if (onChange) {
@@ -43,6 +44,7 @@ const Input = forwardRef<HTMLInputElement, IUiInput>(
         type={type}
         value={value}
         defaultValue={defaultValue}
+        pattern={pattern}
         onBlur={handleOnBlur}
         onChange={handleOnChange}
         disabled={disabled}

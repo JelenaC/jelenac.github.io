@@ -8,6 +8,7 @@ function Layout() {
   const links = [
     { name: 'Lets Reverse', url: '/'},    
     { name: 'My reversed', url: '/my-sentences' },    
+    { name: 'Order sentences', url: '/order-sentences' },
     { name: 'My profile', url: '/my-profile' } 
   ]
 

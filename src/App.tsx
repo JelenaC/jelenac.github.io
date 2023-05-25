@@ -7,6 +7,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { MySentences } from './pages/MySentences'
 import { MyProfile } from './pages/MyProfile'
 import useAuth from './hooks/useAuth'
+import { OrderSentences } from './pages/OrderSentences'
+import { OrderDetails } from './pages/OrderDetails'
+import { OrderConfirmation } from './pages/OrderConfirmation'
 
 function App() {
   const { authToken } = useAuth()
@@ -24,6 +27,9 @@ function App() {
           <Route index element={<ReverseSentence />} />
           <Route path="/" element={<ReverseSentence />} />
           <Route path="my-sentences" element={<MySentences />} />
+          <Route path="order-sentences" element={<OrderSentences />} />
+          <Route path="order-details" element={<OrderDetails />} />
+          <Route path="order-confirmation" element={<OrderConfirmation />} />
           <Route path="my-profile" element={<MyProfile />} />
         </Route>
         {/* display custom 404 */}
