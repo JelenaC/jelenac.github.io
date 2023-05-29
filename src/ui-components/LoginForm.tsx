@@ -32,16 +32,16 @@ function LoginForm({
   onValidatePassword, 
   onSubmit }: ILoginForm){
 
-  const usernameInput = useRef<HTMLInputElement>(null)
+  // const usernameInput = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    usernameInput?.current && usernameInput.current.focus()
-  }, [])
+  // useEffect(() => {
+  //   usernameInput?.current && usernameInput.current.focus()
+  // }, [])
   
   return (  
     <FormContainer onSubmit={onSubmit} noValidate>
       <Input
-        ref={usernameInput} 
+        // ref={usernameInput} 
         label={usernameLabel}
         name='email'
         type='email'
@@ -59,7 +59,7 @@ function LoginForm({
         onBlur={onValidatePassword}
         errorMessage={passwordError}
         />
-      <Button children={buttonLabel} type={'submit'}></Button>
+      <input id="waza" type="submit" value="Submit"></input>
     </FormContainer>
   )
 }
