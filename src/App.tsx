@@ -6,13 +6,11 @@ import { RequireAuth } from './pages/RequireAuth'
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { MySentences } from './pages/MySentences'
 import { MyProfile } from './pages/MyProfile'
-import useAuth from './hooks/useAuth'
 import { OrderSentences } from './pages/OrderSentences'
 import { OrderDetails } from './pages/OrderDetails'
 import { OrderConfirmation } from './pages/OrderConfirmation'
 
 function App() {
-  const { authToken } = useAuth()
   return (
     <Routes>
       {/* A "layout route" is a good place to put markup you want to
