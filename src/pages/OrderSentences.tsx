@@ -37,7 +37,7 @@ function OrderSentences() {
         result.length > 0 ? setSentences(result) : setInfoMessage('You do not have any saved reversed sentences')    
     } catch (error: any) {
         if (error.response?.status === 401) {
-          setInfoMessage('This account is unauthorized. Try to log out and log in again')
+          navigate('/login', { replace: true })
       } else {
           setInfoMessage('Fetch sentences failed')
       }
@@ -76,7 +76,9 @@ function OrderSentences() {
         {sentences.map((sentence, index) => {
           const isSelected = selectedSentences && selectedSentences.some(item=>item===sentence.reversed)
           return(
-            <SentenceCheckbox key={index} id={sentence.id} name={sentence.id} checked={isSelected} onChange={handleOnChange} value={sentence.reversed} reversedSentence={sentence.reversed}/>
+            <SentenceCheckboxWrapper key={index}>
+              <SentenceCheckbox key={index} id={sentence.id} name={sentence.id} checked={isSelected} onChange={handleOnChange} value={sentence.reversed} reversedSentence={sentence.reversed}/>
+            </SentenceCheckboxWrapper>
           )
         })}
       </SentencesList>
@@ -119,6 +121,9 @@ const SentencesList = styled.ul`
     padding: 0;
     margin: 1rem;
 `
+
+const SentenceCheckboxWrapper = styled.li``
+
 const NoSentencesMessage = styled.div`
     margin: 2rem 1rem;
 `

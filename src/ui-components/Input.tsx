@@ -39,6 +39,7 @@ const Input = forwardRef<HTMLInputElement, IUiInput>(
       <Label htmlFor={name}>{label}{required && <i aria-hidden="true">*</i>}</Label>
       <UiInput
         id={name}
+        name={name}
         ref={ref}
         type={type}
         value={value}

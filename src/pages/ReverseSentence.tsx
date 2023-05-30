@@ -3,6 +3,7 @@ import { Button } from '../ui-components/Button'
 import { Input } from '../ui-components/Input'
 import axios from '../api/axios'
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
 const POST_SENTENCES_URL = '/sentence';
 
@@ -16,6 +17,7 @@ function ReverseSentence() {
   const [sentence, setSentence] = useState<string>('')
   const [reversed, setReversedString] = useState<string>('')
   const [infoMessage, setInfoMessage] = useState<string>('')
+  const navigate = useNavigate()
 
   function handleInputChange(e: React.FormEvent<HTMLInputElement>) {
     setSentence(e.currentTarget.value)
@@ -39,7 +41,7 @@ function ReverseSentence() {
         deleteReversedSentence()
     } catch (error: any) {
         if (error.response?.status === 401) {
-          setInfoMessage('This account is unauthorized. Try to log out and log in again')
+          navigate('/login', { replace: true })
         } else {
           setInfoMessage('Fetch sentences failed :(')
       }

@@ -15,30 +15,28 @@ export interface ISentenceCheckbox{
 const SentenceCheckbox = forwardRef<HTMLInputElement, ISentenceCheckbox>(
     ({ id, name, value, onChange, disabled, checked, reversedSentence}, ref) => {
 
-        function handleOnChange(e: React.FormEvent<HTMLInputElement>) {
-            if (onChange) {
-              onChange(e)
-            }
-          }
+  function handleOnChange(e: React.FormEvent<HTMLInputElement>) {
+      if (onChange) {
+        onChange(e)
+      }
+    }
 
-        return (
-            <UiSentenceCheckbox>
-            <Sentence>{reversedSentence}</Sentence>
-            <UiCheckbox
-                id={id}
-                name={name}
-                ref={ref}
-                type={'checkbox'}
-                onChange={handleOnChange}
-                value={value}
-                checked={checked}
-                disabled={disabled}
-            />
-            
-         </UiSentenceCheckbox>
+  return (
+    <UiSentenceCheckbox>
+      <Sentence htmlFor={name}>{reversedSentence}</Sentence>
+      <UiCheckbox
+          id={id}
+          name={name}
+          ref={ref}
+          type={'checkbox'}
+          onChange={handleOnChange}
+          value={value}
+          checked={checked}
+          disabled={disabled}
+      />    
+    </UiSentenceCheckbox>
   )
-}
-)
+})
 
 export { SentenceCheckbox }
 
@@ -54,7 +52,7 @@ const UiCheckbox = styled.input`
   font-weight: bold;
 `;
 
-const Sentence = styled.div`
+const Sentence = styled.label`
 flex: 1;
 border: none;
 border-radius: 0.25rem;

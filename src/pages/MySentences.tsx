@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from '../api/axios'
 import { Loader } from '../ui-components/Loader'
 import { SentenceBlock } from '../ui-components/SentenceBlock'
+import { useNavigate } from 'react-router-dom';
 
 const GET_SENTENCES_URL = '/sentence';
 
@@ -17,6 +18,7 @@ function MySentences() {
   const [sentences, setSentences] = useState<TSentence[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [infoMessage, setInfoMessage] = useState<string>('')
+  const navigate = useNavigate()
 
   useEffect(() => {
     getSentences()
@@ -35,7 +37,7 @@ function MySentences() {
         result.length > 0 ? setSentences(result) : setInfoMessage('You do not have any saved reversed sentences')    
     } catch (error: any) {
         if (error.response?.status === 401) {
-          setInfoMessage('This account is unauthorized. Try to log out and log in again')
+          navigate('/login', { replace: true })
       } else {
           setInfoMessage('Fetch sentences failed')
       }
@@ -53,7 +55,7 @@ function MySentences() {
     <Sentences>
       <SentencesList>
           {sentences.map(sentence => 
-            <SentenceBlockWrapper>
+            <SentenceBlockWrapper key={sentence.id}>
               <SentenceBlock 
                 key={sentence.id}
                 sentenceLabel= { 'Original sentence' }

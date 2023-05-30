@@ -20,7 +20,7 @@ function App() {
       <Route path="/" element={<Layout />}>
 
         {/* public routes */}
-        <Route path="/login" element={(authToken && authToken!=='') ? <Navigate to="/" replace /> : <Login />}/>
+        <Route path="/login" element={ <Login />}/>
 
         {/* protected routes */}
         <Route element={<RequireAuth/>}>
