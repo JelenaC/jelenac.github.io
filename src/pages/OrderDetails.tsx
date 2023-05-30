@@ -136,7 +136,7 @@ function OrderDetails() {
             } else if (error.response?.status === 400) {
                 setFormErrorMessage('Provided data is not correct');
             } else if (error.response?.status === 401) {
-                setFormErrorMessage('This account is unauthorized');
+                navigate('/login', { replace: true })
             } else {
                 setFormErrorMessage('Order Sentences Failed :(');
             }
