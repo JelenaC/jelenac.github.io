@@ -4,6 +4,7 @@ import { Input } from '../ui-components/Input'
 import axios from '../api/axios'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
 
 const POST_SENTENCES_URL = '/sentence';
 
@@ -17,6 +18,7 @@ function ReverseSentence() {
   const [sentence, setSentence] = useState<string>('')
   const [reversed, setReversedString] = useState<string>('')
   const [infoMessage, setInfoMessage] = useState<string>('')
+  const { setAuthToken } = useAuth()
   const navigate = useNavigate()
 
   function handleInputChange(e: React.FormEvent<HTMLInputElement>) {
@@ -41,6 +43,8 @@ function ReverseSentence() {
         deleteReversedSentence()
     } catch (error: any) {
         if (error.response?.status === 401) {
+          setAuthToken('')
+          localStorage.setItem('token', '')
           navigate('/login', { replace: true })
         } else {
           setInfoMessage('Fetch sentences failed :(')

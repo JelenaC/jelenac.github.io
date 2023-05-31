@@ -68,7 +68,7 @@ export { Input }
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 70%;
+  width: 100%;
 `;
 
 const Label = styled.label`
@@ -106,6 +106,7 @@ const UiInput = styled.input`
 const ErrorMessage = styled.div`
   color: red;
   font-size: 0.8rem;
-  margin-top: 0.25rem;
+  margin: 0.25rem auto;
   color: #ff0000;
+  max-width: 85%;
 `;

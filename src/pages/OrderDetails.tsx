@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import axios from '../api/axios'
 import styled from 'styled-components';
 import { OrderForm } from '../ui-components/OrderForm';
+import useAuth from '../hooks/useAuth';
 
 const ORDER_URL = '/order';
 
@@ -21,6 +22,7 @@ function OrderDetails() {
     const [isPostCodeValid, setIsPostCodeValid] = useState<boolean>(false)
     const [isCityValid, setIsCityValid] = useState<boolean>(false)
 
+    const { setAuthToken } = useAuth()
     const navigate = useNavigate()
     const { state } = useLocation()
     const reversedSentences: string[] = state
@@ -136,6 +138,8 @@ function OrderDetails() {
             } else if (error.response?.status === 400) {
                 setFormErrorMessage('Provided data is not correct');
             } else if (error.response?.status === 401) {
+                setAuthToken('')
+                localStorage.setItem('token', '')
                 navigate('/login', { replace: true })
             } else {
                 setFormErrorMessage('Order Sentences Failed :(');

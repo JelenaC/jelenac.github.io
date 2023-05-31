@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Button } from "./Button";
 import { Input } from "./Input";
 
-interface ILoginForm {
+interface IOrderForm {
   nameLabel: string
   name?: string
   streetLabel: string
@@ -30,14 +30,14 @@ interface ILoginForm {
 }
 
 function OrderForm({
-    nameLabel, 
-    name, 
-    streetLabel, 
-    street, 
-    postCodeLabel,
-    postCode,
-    cityLabel,
-    city,
+  nameLabel, 
+  name, 
+  streetLabel, 
+  street, 
+  postCodeLabel,
+  postCode,
+  cityLabel,
+  city,
   nameError, 
   streetError, 
   postCodeError,
@@ -52,7 +52,7 @@ function OrderForm({
   onValidateStreet, 
   onValidatePostCode,
   onValidateCity,
-  onSubmit }: ILoginForm){
+  onSubmit }: IOrderForm){
 
   const nameInput = useRef<HTMLInputElement>(null)
 

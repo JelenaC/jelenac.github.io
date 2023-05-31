@@ -1,10 +1,12 @@
 import { Outlet } from 'react-router-dom'
 import useAuth from '../hooks/useAuth';
 import { Navigation } from '../ui-components/Navigation'
+import useIsTokenValid from '../hooks/useIsTokenValid';
 
 function Layout() {
   const { authToken } = useAuth()
-  const userIsLoggedIn = authToken && authToken!=='' ? true : false
+  const tokenIsValid = useIsTokenValid(authToken)
+  const userIsLoggedIn = authToken && authToken!=='' && tokenIsValid ? true : false
   const links = [
     { name: 'Lets Reverse', url: '/'},    
     { name: 'My reversed', url: '/my-sentences' },    

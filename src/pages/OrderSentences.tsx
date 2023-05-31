@@ -5,6 +5,7 @@ import { Loader } from '../ui-components/Loader'
 import { Button } from '../ui-components/Button';
 import { SentenceCheckbox } from '../ui-components/SentenceCheckbox';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 const GET_SENTENCES_URL = '/sentence';
 
@@ -18,6 +19,7 @@ function OrderSentences() {
   const [loading, setLoading] = useState<boolean>(true)
   const [infoMessage, setInfoMessage] = useState<string>('')
   const [selectedSentences, setSelectedSentences] = useState<string[]>([])
+  const { setAuthToken } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -37,6 +39,8 @@ function OrderSentences() {
         result.length > 0 ? setSentences(result) : setInfoMessage('You do not have any saved reversed sentences')    
     } catch (error: any) {
         if (error.response?.status === 401) {
+          setAuthToken('')
+          localStorage.setItem('token', '')
           navigate('/login', { replace: true })
       } else {
           setInfoMessage('Fetch sentences failed')

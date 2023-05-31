@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components';
+import styled from 'styled-components'
 import axios from '../api/axios'
 import { Loader } from '../ui-components/Loader'
 import { SentenceBlock } from '../ui-components/SentenceBlock'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
 
 const GET_SENTENCES_URL = '/sentence';
 
@@ -18,6 +19,7 @@ function MySentences() {
   const [sentences, setSentences] = useState<TSentence[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [infoMessage, setInfoMessage] = useState<string>('')
+  const { setAuthToken } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -37,6 +39,8 @@ function MySentences() {
         result.length > 0 ? setSentences(result) : setInfoMessage('You do not have any saved reversed sentences')    
     } catch (error: any) {
         if (error.response?.status === 401) {
+          setAuthToken('')
+          localStorage.setItem('token', '')
           navigate('/login', { replace: true })
       } else {
           setInfoMessage('Fetch sentences failed')
