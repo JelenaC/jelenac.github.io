@@ -1,6 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { reverseString } from "../pages/ReverseSentence"
 import "@testing-library/jest-dom"
-import { ReverseSentence, reverseString } from "../pages/ReverseSentence"
 
 describe("Sentence Converter Method Test", () => { 
     test ("Given a string, should return reversed string", ()=>{
