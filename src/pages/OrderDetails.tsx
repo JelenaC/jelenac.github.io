@@ -1,181 +1,136 @@
-import { useState, useEffect} from 'react'
+import React, { useState, useEffect} from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from '../api/axios'
-import styled from 'styled-components';
-import { OrderForm } from '../ui-components/OrderForm';
+import styled from 'styled-components'
 import useAuth from '../hooks/useAuth';
+import { acceptedTypes } from '../ui-components/Input'
+import { Form } from '../ui-components/Form'
 
-const ORDER_URL = '/order';
+const ORDER_URL = '/order'
 
 function OrderDetails() {
-    const [name, setName] = useState<string>('')
-    const [street, setStreet] = useState<string>('')
-    const [postCode, setPostCode] = useState<string>('')
-    const [city, setCity] = useState<string>('')
-    const [nameErrorMessage, setNameErrorMessage] = useState<string>('')
-    const [streetErrorMessage, setStreetErrorMessage] = useState<string>('')
-    const [postCodeErrorMessage, setPostCodeErrorMessage] = useState<string>('')
-    const [cityErrorMessage, setCityErrorMessage] = useState<string>('')
-    const [formErrorMessage, setFormErrorMessage] = useState<string>('')
-    const [isNameValid, setIsNameValid] = useState<boolean>(false)
-    const [isStreetValid, setIsStreetValid] = useState<boolean>(false)
-    const [isPostCodeValid, setIsPostCodeValid] = useState<boolean>(false)
-    const [isCityValid, setIsCityValid] = useState<boolean>(false)
-
+    const [formValues, setFormValues] = useState({ name: '', street: '', postCode: '', city: '' })
+    const [formErrors, setFormErrors] = useState({ name: '', street: '', postCode: '', city: '', formErrorMessage: '' })
     const { setAuthToken } = useAuth()
     const navigate = useNavigate()
     const { state } = useLocation()
     const reversedSentences: string[] = state
 
     useEffect(() => {
-        setNameErrorMessage('')
-    }, [name])
+        setFormErrors((prevErrors) => ({ ...prevErrors, name: '' }))
+    }, [formValues.name])
 
     useEffect(() => {
-        setStreetErrorMessage('')
-    }, [street])
+        setFormErrors((prevErrors) => ({ ...prevErrors, street: '' }))
+    }, [formValues.street])
 
     useEffect(() => {
-        setPostCodeErrorMessage('')
-    }, [postCode])
+        setFormErrors((prevErrors) => ({ ...prevErrors, postCode: '' }))
+    }, [formValues.postCode])
 
     useEffect(() => {
-        setCityErrorMessage('')
-    }, [city])
-    
-    function handleNameChange(event: React.ChangeEvent<HTMLInputElement>){
-        setName(event.target.value)
-    }
+        setFormErrors((prevErrors) => ({ ...prevErrors, city: '' }))
+    }, [formValues.city])
 
-    function handleStreetChange(event: React.ChangeEvent<HTMLInputElement>){
-        setStreet(event.target.value)
-    }
+    useEffect(() => {
+        setFormErrors((prevErrors) => ({ ...prevErrors, formErrorMessage: '' }))
+    }, [formValues.name, formValues.street, formValues.postCode, formValues.city])
 
-    function handlePostCodeChange(event: React.ChangeEvent<HTMLInputElement>){
-        setPostCode(event.target.value)
-    }
-
-    function handleCityChange(event: React.ChangeEvent<HTMLInputElement>){
-        setCity(event.target.value)
+    function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const { name, value } = event.target
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          [name]: value,
+        }))
     }
 
     function validateName(value: string){
         if (value.trim() === '') {
-            setNameErrorMessage('Name is required');
-            setIsNameValid(false)
+            setFormErrors((prevErrors) => ({ ...prevErrors, name: 'Name is required'}))
             return false
         } else if (!/^[a-zA-Z]{2,}(?: [a-zA-Z]+){0,2}$/.test(value.trim())) {
-            setNameErrorMessage('Name must have at least two letters')
-            setIsNameValid(false)
+            setFormErrors((prevErrors) => ({ ...prevErrors, name: 'Name must have at least two letters and no numbers'}))
             return false
         } else {
-            setIsNameValid(true)
-            setNameErrorMessage('')
             return true
         }
     }
 
     function validateStreet(value: string){
         if (value.trim() === "") {
-            setStreetErrorMessage("Street is required");
-            setIsStreetValid(false)
+            setFormErrors((prevErrors) => ({ ...prevErrors, street: 'Street is required'}))
+            return false
         } else {
-            setIsStreetValid(true)
-            setStreetErrorMessage("")
+            return true
         }
     }
-    
 
     function validatePostCode(value: string){
         if (value.trim() === "") {
-            setPostCodeErrorMessage('Post code is required')
-            setIsPostCodeValid(false)
+            setFormErrors((prevErrors) => ({ ...prevErrors, postCode: 'Post code is required'}))
+            return false
         } else if (!/^\d{5}$/.test(value.trim())) {
-            setPostCodeErrorMessage('Post code must be a 5 digits number')
-            setIsPostCodeValid(false)
+            setFormErrors((prevErrors) => ({ ...prevErrors, postCode: 'Post code must be a 5 digits number'}))
             return false
         } else {
-            setIsPostCodeValid(true)
-            setPostCodeErrorMessage("")
+            return true
         }
     }
 
     function validateCity(value: string){
         if (value.trim() === "") {
-            setCityErrorMessage("City is required");
-            setIsCityValid(false)
+            setFormErrors((prevErrors) => ({ ...prevErrors, city: 'City is required'}))
+            return false
+        } else if (!/^[a-zA-Z]{2,}(?: [a-zA-Z]+){0,1}$/.test(value.trim())) {
+            setFormErrors((prevErrors) => ({ ...prevErrors, city: 'Name must have at least one letter and no numbers'}))
+            return false
         } else {
-            setIsCityValid(true)
-            setCityErrorMessage("")
+            return true
         }
     }
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>){
         event.preventDefault()
-        if(!isNameValid){
-            validateName(name)
+        const isNameValid = validateName(formValues.name)
+        const isStreetValid = validateStreet(formValues.street)
+        const isPostCodeValid = validatePostCode(formValues.postCode)
+        const isCityValid = validateCity(formValues.city)
+        if(!isNameValid || !isStreetValid || !isPostCodeValid || !isCityValid){
             return null
         }
-        if(!isStreetValid){
-            validateStreet(street)
-            return null
-        }
-        if(!isPostCodeValid){
-            validatePostCode(postCode)
-            return null
-        }
-        if(!isCityValid){
-            validateCity(city)
-            return null
-        }
-
+        const { name, street, postCode, city } = formValues
+        const config = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
         try {
-            await axios.post(ORDER_URL, { reversedSentences, name, street, postCode:parseInt(postCode), city })
+            await axios.post(ORDER_URL, { reversedSentences, name, street, postCode:parseInt(postCode), city }, config)
             navigate("/order-confirmation", { replace: true })
         } catch (error: any) {
             if (!error?.response) {
-                setFormErrorMessage('No Server Response');
+                setFormErrors((prevErrors) => ({ ...prevErrors, formErrorMessage: 'No Server Response'}))
             } else if (error.response?.status === 400) {
-                setFormErrorMessage('Provided data is not correct');
+                setFormErrors((prevErrors) => ({ ...prevErrors, formErrorMessage: 'Provided data is not correct'}))
             } else if (error.response?.status === 401) {
                 setAuthToken('')
                 localStorage.setItem('token', '')
                 navigate('/login', { replace: true })
             } else {
-                setFormErrorMessage('Order Sentences Failed :(');
+                setFormErrors((prevErrors) => ({ ...prevErrors, formErrorMessage: 'Order Sentences Failed :('}))
             }
         }
     }
+
+    const formInputs = [
+        {label: 'Name: *', type: 'text' as acceptedTypes, name: 'name', value: formValues.name, onBlur:()=>validateName(formValues.name), onChange: handleInputChange, errorMessage: formErrors.name},
+        {label: 'Street: *',type: 'text' as acceptedTypes,  name: 'street', value: formValues.street, onBlur:()=>validateStreet(formValues.street), onChange: handleInputChange, errorMessage: formErrors.street},
+        {label: 'Post code: *', type: 'text' as acceptedTypes, name: 'postCode', value: formValues.postCode, pattern:'[0-9]{5}', onBlur:()=>validatePostCode(formValues.postCode), onChange: handleInputChange, errorMessage: formErrors.postCode},
+        {label: 'City: *', type: 'text' as acceptedTypes, name: 'city', value: formValues.city, onBlur:()=>validateCity(formValues.city), onChange: handleInputChange, errorMessage: formErrors.city}
+    ]
 
     return (
         <ContentWrapper>
             <h1>Almost there!</h1>
             <h2>Let's send in the sentences you ordered...</h2>
             <p>Please fill out your information!</p>
-            <OrderForm 
-                onSubmit={handleSubmit}
-                name={name}
-                nameLabel={'Name: *'}
-                nameError={nameErrorMessage}
-                street={street}
-                streetLabel={'Street: *'}
-                streetError={streetErrorMessage}
-                postCode={postCode}
-                postCodeLabel={'Post code: *'}
-                postCodeError={postCodeErrorMessage}
-                city={city}
-                cityLabel={'City: *'}
-                cityError={cityErrorMessage}
-                buttonLabel={'Send order'}
-                onNameChange={handleNameChange}
-                onStreetChange={handleStreetChange}
-                onPostCodeChange={handlePostCodeChange} 
-                onCityChange={handleCityChange} 
-                onValidateName={() => validateName(name)}
-                onValidateStreet={() => validateStreet(street)}
-                onValidatePostCode={()=>validatePostCode(postCode)} 
-                onValidateCity={()=>validateCity(city)}
-                formError={formErrorMessage}/>
+            <Form onSubmit={handleSubmit} formArgs={formInputs} formError={formErrors.formErrorMessage} buttonLabel={'Send order'} />
         </ContentWrapper>
     )
 }
@@ -199,4 +154,4 @@ const ContentWrapper = styled.div`
         width: 50%;
         margin: 0 auto;
     }
-`;
+`

@@ -1,63 +1,54 @@
 import React, { forwardRef } from 'react'
 import styled from 'styled-components'
 
-type acceptedTypes = 'text' | 'email' | 'password' | 'number'
+export type acceptedTypes = 'text' | 'email' | 'password' | 'number'
 
 export interface IUiInput{
-  type?: acceptedTypes
+  type: acceptedTypes
   label: string
   name: string
   value?: string
-  defaultValue?: string
   pattern?: string
   onBlur?: CallableFunction
   onChange?: CallableFunction
   placeholder?: string
-  autocomplete?: string
   disabled?: boolean
   errorMessage?: string
   required?: boolean
 }
 
 const Input = forwardRef<HTMLInputElement, IUiInput>(
-  ({ type = 'text', label, name, value, defaultValue, errorMessage, required, pattern, onBlur, onChange, disabled, placeholder, autocomplete }, ref) => {
+  ({ type = 'text', label, name, value, errorMessage, required, pattern, onBlur, onChange, disabled, placeholder }, ref) => {
     
     function handleOnChange(e: React.FormEvent<HTMLInputElement>) {
-      if (onChange) {
-        onChange(e)
-      }
+      onChange && onChange(e)
     }
 
     function handleOnBlur(e: React.FocusEvent<HTMLInputElement>) {
-      if (onBlur) {
-        onBlur(e)
-      }
+      onBlur && onBlur(e)
     }
 
     return (
       <InputContainer>
-      <Label htmlFor={name}>{label}{required && <i aria-hidden="true">*</i>}</Label>
-      <UiInput
-        id={name}
-        name={name}
-        ref={ref}
-        type={type}
-        value={value}
-        defaultValue={defaultValue}
-        pattern={pattern}
-        onBlur={handleOnBlur}
-        onChange={handleOnChange}
-        disabled={disabled}
-        placeholder={placeholder}
-        autoComplete={autocomplete}
-        required={required}
-        aria-label={label}
-        aria-required={required}
-        aria-invalid={!!(errorMessage && errorMessage!=='')}
-        aria-describedby= {`${name}-error`}
-      />
+        <Label htmlFor={name}>{label}{required && <i aria-hidden="true">*</i>}</Label>
+        <UiInput
+          id={name}
+          name={name}
+          ref={ref}
+          type={type}
+          value={value}
+          pattern={pattern}
+          onBlur={handleOnBlur}
+          onChange={handleOnChange}
+          disabled={disabled}
+          placeholder={placeholder}
+          required={required}
+          aria-required={required}
+          aria-invalid={!!(errorMessage && errorMessage!=='')}
+          aria-describedby= {`${name}-error`}
+        />
         {errorMessage && errorMessage!=='' && <ErrorMessage id={`${name}-error`} role='alert'>{errorMessage}</ErrorMessage>}
-    </InputContainer>
+      </InputContainer>
     )
   }
 )
@@ -76,7 +67,7 @@ const Label = styled.label`
   margin-bottom: 0.5rem;
   color: #333a4e;
   font-weight: bold;
-`;
+`
 
 const UiInput = styled.input`
   box-sizing: border-box;
@@ -106,7 +97,7 @@ const UiInput = styled.input`
 const ErrorMessage = styled.div`
   color: red;
   font-size: 0.8rem;
-  margin: 0.25rem auto;
+  margin: 0.25rem 0;
   color: #ff0000;
   max-width: 85%;
-`;
+`

@@ -56,7 +56,7 @@ function ReverseSentence() {
     <ContentWrapper>
       <h2>Let's reverse some sentences.. Whoho :)</h2>
       <SentenceWrapper>
-        <SentenceInput><Input value={sentence} onChange={handleInputChange} label={'Type sentence'} name={'reverse-sentence'}></Input></SentenceInput>
+        <SentenceInput><Input value={sentence} onChange={handleInputChange} label={'Type sentence'} name={'reverse-sentence'} type={'text'}></Input></SentenceInput>
         <ButtonWrapper><Button children={'Reverse'} type={'button'} onClick={()=>handleReverseString(sentence)}></Button></ButtonWrapper>
       </SentenceWrapper>
       {reversed && reversed!=='' && 

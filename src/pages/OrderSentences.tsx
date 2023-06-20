@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import axios from '../api/axios'
 import { Loader } from '../ui-components/Loader'
-import { Button } from '../ui-components/Button';
-import { SentenceCheckbox } from '../ui-components/SentenceCheckbox';
-import { useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
+import { Button } from '../ui-components/Button'
+import { SentenceCheckbox } from '../ui-components/SentenceCheckbox'
+import { useNavigate } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
 
-const GET_SENTENCES_URL = '/sentence';
+const GET_SENTENCES_URL = '/sentence'
 
 export type TReversedSentence = {
   id: string,
@@ -18,7 +18,7 @@ function OrderSentences() {
   const [sentences, setSentences] = useState<TReversedSentence[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [infoMessage, setInfoMessage] = useState<string>('')
-  const [selectedSentences, setSelectedSentences] = useState<string[]>([])
+  const [selectedSentences, setSelectedSentences] = useState<TReversedSentence[]>([])
   const { setAuthToken } = useAuth()
   const navigate = useNavigate()
 
@@ -49,12 +49,12 @@ function OrderSentences() {
   }
 
   function handleOnChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const selectedCheckboxValue = e.currentTarget.value
+    const selectedCheckboxValue = {id: e.currentTarget.id, reversed: e.currentTarget.value}
 
     setSelectedSentences(prevSelected => {
       const newArray = [...prevSelected]
-      if (newArray.some(item=> item===selectedCheckboxValue)) {
-          return newArray.filter(item => item !== selectedCheckboxValue)
+      if (newArray.some(item=> item.id===selectedCheckboxValue.id)) {
+          return newArray.filter(item => item.id !== selectedCheckboxValue.id)
       } else {
           newArray.push(selectedCheckboxValue)
           return newArray
@@ -62,8 +62,12 @@ function OrderSentences() {
     })
   }
 
+  function getSelectedSentencesValues(selectedSentences: TReversedSentence[]){
+    return selectedSentences.map(sentence => sentence.reversed)  
+  }
+
   function handleOrderSentences(){
-    navigate("/order-details", { state: selectedSentences, replace: true })
+    navigate("/order-details", { state: getSelectedSentencesValues(selectedSentences), replace: true })
   }
 
   if(infoMessage!==''){
@@ -77,11 +81,11 @@ function OrderSentences() {
   return (
     <Sentences>
       <SentencesList>
-        {sentences.map((sentence, index) => {
-          const isSelected = selectedSentences && selectedSentences.some(item=>item===sentence.reversed)
+        {sentences.map(sentence => {
+          const isSelected = selectedSentences && selectedSentences.some(item=>item.id===sentence.id)
           return(
-            <SentenceCheckboxWrapper key={index}>
-              <SentenceCheckbox key={index} id={sentence.id} name={sentence.id} checked={isSelected} onChange={handleOnChange} value={sentence.reversed} reversedSentence={sentence.reversed}/>
+            <SentenceCheckboxWrapper key={sentence.id}>
+              <SentenceCheckbox key={sentence.id} id={sentence.id} name={sentence.id} checked={isSelected} onChange={handleOnChange} value={sentence.reversed} reversedSentence={sentence.reversed}/>
             </SentenceCheckboxWrapper>
           )
         })}

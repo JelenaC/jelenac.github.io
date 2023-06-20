@@ -25,7 +25,7 @@ describe('Login Process', () => {
         }).as('getToken')
 
         cy.visit('/login')
-        cy.get('input[name=email]').type(username)
+        cy.get('input[name=username]').type(username)
         cy.get('input[name=password]').type(password)
         cy.get('button[type=submit]').focus().click()
 

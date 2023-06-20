@@ -1,115 +1,107 @@
-import { useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import useAuth from '../hooks/useAuth'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from '../api/axios'
-import { LoginForm } from '../ui-components/LoginForm';
 import styled from 'styled-components';
+import { Form } from '../ui-components/Form'
+import { acceptedTypes } from '../ui-components/Input'
 
-const LOGIN_URL = '/login';
+const LOGIN_URL = '/login'
 
 function Login() {
     const { setAuthToken } = useAuth()
-    const [username, setUsername] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
-    const [usernameErrorMessage, setUsernameErrorMessage] = useState<string>('')
-    const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('')
-    const [isUsernameValid, setIsUsernameValid] = useState<boolean>(false)
-    const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false)
-
+    const [credentials, setCredentials] = useState({ username: '', password: '' })
+    const [errors, setErrors] = useState({ username: '', password: '', formErrorMessage: '' })
     const navigate = useNavigate()
     const location = useLocation()
     const from = location.state?.from?.pathname || "/"
 
     useEffect(() => {
-        setUsernameErrorMessage('')
-    }, [username])
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            username: '',
+          }));
+    }, [credentials.username])
 
     useEffect(() => {
-        setPasswordErrorMessage('')
-    }, [password])
-    
-    function handleUsernameChange(event: React.ChangeEvent<HTMLInputElement>){
-        setUsername(event.target.value);
-    }
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            password: '',
+          }));
+    }, [credentials.password])
 
-    function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>){
-        setPassword(event.target.value)
+    useEffect(() => {
+        setErrors((prevErrors) => ({ ...prevErrors, formErrorMessage: '' }));
+    }, [credentials.username, credentials.password])
+
+    function handleCredentialsChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const { name, value } = event.target
+        setCredentials((prevCredentials) => ({
+          ...prevCredentials,
+          [name]: value,
+        }))
     }
 
     function validateUsername(value: string){
         if (value.trim() === '') {
-            setUsernameErrorMessage('User email is required');
-            setIsUsernameValid(false)
+            setErrors((prevErrors) => ({ ...prevErrors, username: 'User email is required' }))
             return false
         } else if (!/^[A-Za-z0-9._%+-]{1,64}@(?:[A-Za-z0-9-]{1,63}\.){1,125}[A-Za-z]{2,63}$/.test(value)) {
-            setUsernameErrorMessage('Invalid email format')
-            setIsUsernameValid(false)
+            setErrors((prevErrors) => ({ ...prevErrors, username: 'Invalid email format' }))
             return false
         } else {
-            setIsUsernameValid(true)
-            setUsernameErrorMessage('')
+            setErrors((prevErrors) => ({ ...prevErrors, username: '' }))
             return true
         }
     }
 
     function validatePassword(value: string){
         if (value.trim() === "") {
-            setPasswordErrorMessage("Password is required.");
-            setIsPasswordValid(false)
+            setErrors((prevErrors) => ({ ...prevErrors, password: 'Password is required.' }))
+            return false
         } else {
-            setIsPasswordValid(true)
-            setPasswordErrorMessage("")
+            setErrors((prevErrors) => ({ ...prevErrors, password: '' }))
+            return true
         }
-      }
-      
+    } 
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>){
         event.preventDefault()
-        if(!isUsernameValid){
-            validateUsername(username)
-            return null
-        }
-        if(!isPasswordValid){
-            validatePassword(password)
+        const isUsernameValid = validateUsername(credentials.username)
+        const isPasswordValid = validatePassword(credentials.password)
+        if (!isUsernameValid || !isPasswordValid) {
             return null
         }
         try {
-            const response = await axios.post(LOGIN_URL, { username, password })
+            const response = await axios.post(LOGIN_URL, credentials)
             const accessToken = response?.data?.token
             setAuthToken(accessToken)
             localStorage.setItem('token', accessToken)
             navigate(from, { replace: true })
         } catch (error: any) {
             if (!error?.response) {
-                setPasswordErrorMessage('No Server Response');
+                setErrors((prevErrors) => ({ ...prevErrors, formErrorMessage: 'No Server Response'}))
             } else if (error.response?.status === 400) {
-                setPasswordErrorMessage('Missing Username or Password');
+                setErrors((prevErrors) => ({ ...prevErrors, formErrorMessage: 'Missing Username or Password'}))
             } else if (error.response?.status === 401) {
-                setPasswordErrorMessage('We are sorry but we are not able to authenticate you. Please check your credentials and try to log in again');
+                setErrors((prevErrors) => ({ ...prevErrors, formErrorMessage: 'We are sorry but we are not able to authenticate you. Please check your credentials and try to log in again'}))
             } else {
-                setPasswordErrorMessage('Login Failed :(');
+                setErrors((prevErrors) => ({ ...prevErrors, formErrorMessage: 'Login Failed :('}))
             }
         }
     }
+
+    const formInputs = [
+        {label: 'Email: *', type: 'text' as acceptedTypes, name: 'username', value: credentials.username, onBlur:()=>validateUsername(credentials.username), onChange: handleCredentialsChange, errorMessage: errors.username},
+        {label: 'Password: *',type: 'password' as acceptedTypes,  name: 'password', value: credentials.password, onBlur:()=>validatePassword(credentials.password), onChange: handleCredentialsChange, errorMessage: errors.password}
+    ]
 
     return (
         <ContentWrapper>
             <h1>Welcome!</h1>
             <h2>Are you ready to create funtastic stuff together?</h2>
             <p>But first thing first - you need to log in!</p>
-            <LoginForm 
-                onSubmit={handleSubmit} 
-                username={username}
-                usernameLabel={'Email: *'}
-                usernameError= {usernameErrorMessage}
-                password={password}
-                passwordLabel={'Password: *'} 
-                passwordError= {passwordErrorMessage}
-                buttonLabel={'Login'} 
-                onPasswordChange={handlePasswordChange} 
-                onUsernameChange={handleUsernameChange} 
-                onValidateUsername={()=>validateUsername(username)} 
-                onValidatePassword={()=>validatePassword(password) }/>
+            <Form onSubmit={handleSubmit} formArgs={formInputs} formError={errors.formErrorMessage} buttonLabel={'Login'} />
         </ContentWrapper>
     )
 }
@@ -133,4 +125,4 @@ const ContentWrapper = styled.div`
         width: 50%;
         margin: 0 auto;
     }
-`;
+`
